@@ -112,6 +112,96 @@ var parseTests = {
     'hostname': 'SuB.doMAIN.cOM',
     'pathname': '/foo/bar'
   },
+  // domain name restrictions on TLD
+  // can't start with a digit or hyphen
+  'http://hello.world.5com/foo/bar': {
+    'href': 'http://hello.world.5com/foo/bar',
+    'protocol': 'http:',
+    'host': 'hello.world.5com',
+    'hostname': '',
+    'pathname': '/foo/bar'
+  },
+  'http://hello.world.-com/foo/bar': {
+    'href': 'http://hello.world.-com/foo/bar',
+    'protocol': 'http:',
+    'host': 'hello.world.-com',
+    'hostname': '',
+    'pathname': '/foo/bar'
+  },
+  // can't end with an hyphen
+  'http://hello.world.com-/foo/bar': {
+    'href': 'http://hello.world.com-/foo/bar',
+    'protocol': 'http:',
+    'host': 'hello.world.com-',
+    'hostname': '',
+    'pathname': '/foo/bar'
+  },
+  // can't exceed 63 chars
+  'http://domain.tld05tld10tld15tld20tld25tld30tld35tld40tld45tld50tld55tld60abcd/foo/bar': {
+    'href': 'http://domain.tld05tld10tld15tld20tld25tld30tld35tld40tld45tld50tld55tld60abcd/foo/bar',
+    'protocol': 'http:',
+    'host': 'domain.tld05tld10tld15tld20tld25tld30tld35tld40tld45tld50tld55tld60abcd',
+    'hostname': '',
+    'pathname': '/foo/bar',
+  },
+  // 63 chars with a hyphen and digits in the middle are ok
+  'http://domain.tld-5tld1-tld15tld2-tld25tld3-tld35tld4-tld45tld5-tld55tld6-abc/foo/bar': {
+    'href': 'http://domain.tld-5tld1-tld15tld2-tld25tld3-tld35tld4-tld45tld5-tld55tld6-abc/foo/bar',
+    'protocol': 'http:',
+    'host': 'domain.tld-5tld1-tld15tld2-tld25tld3-tld35tld4-tld45tld5-tld55tld6-abc',
+    'hostname': 'domain.tld-5tld1-tld15tld2-tld25tld3-tld35tld4-tld45tld5-tld55tld6-abc',
+    'pathname': '/foo/bar'
+  },
+  // can end with an additional '.'
+  'http://host.domain.local./foo/bar': {
+    'href': 'http://host.domain.local./foo/bar',
+    'protocol': 'http:',
+    'host': 'host.domain.local.',
+    'hostname': 'host.domain.local.',
+    'pathname': '/foo/bar'
+  },
+  // Domain name restriction on domain components
+  // can't start with an hyphen
+  'http://hello.-world.com/foo/bar': {
+    'href': 'http://hello.-world.com/foo/bar',
+    'protocol': 'http:',
+    'host': 'hello.-world.com',
+    'hostname': '',
+    'pathname': '/foo/bar'
+  },
+  // can't end with a hyphen
+  'http://hello.world-.com/foo/bar': {
+    'href': 'http://hello.world-.com/foo/bar',
+    'protocol': 'http:',
+    'host': 'hello.world-.com',
+    'hostname': '',
+    'pathname': '/foo/bar'
+  },
+  // can't exceed 63 chars
+  'http://hello.sub05sub10sub15sub20sub25sub30sub35sub40sub45sub50sub55sub60subx.com/foo/bar': {
+    'href': 'http://hello.sub05sub10sub15sub20sub25sub30sub35sub40sub45sub50sub55sub60subx.com/foo/bar',
+    'protocol': 'http:',
+    'host': 'hello.sub05sub10sub15sub20sub25sub30sub35sub40sub45sub50sub55sub60subx.com',
+    'hostname': '',
+    'pathname': '/foo/bar'
+  },
+  // 63 or less, hyphens not on boundaries are ok
+  'http://2hello.1ub-5sub1-sub15sub2-sub25sub3-sub35sub4-sub45sub5-sub55sub6-sub.com/foo/bar': {
+    'href': 'http://2hello.1ub-5sub1-sub15sub2-sub25sub3-sub35sub4-sub45sub5-sub55sub6-sub.com/foo/bar',
+    'protocol': 'http:',
+    'host': '2hello.1ub-5sub1-sub15sub2-sub25sub3-sub35sub4-sub45sub5-sub55sub6-sub.com',
+    'hostname': '2hello.1ub-5sub1-sub15sub2-sub25sub3-sub35sub4-sub45sub5-sub55sub6-sub.com',
+    'pathname': '/foo/bar'
+  },
+  // ipv4 host
+  'http://192.168.0.1/foo/bar': {
+    'href': 'http://192.168.0.1/foo/bar',
+    'protocol': 'http:',
+    'host': '192.168.0.1',
+    'hostname': '192.168.0.1',
+    'pathname': '/foo/bar'
+  },
+
   '//user:pass@example.com:8000/foo/bar?baz=quux#frag' : {
     'href': '//user:pass@example.com:8000/foo/bar?baz=quux#frag',
     'host': 'user:pass@example.com:8000',
